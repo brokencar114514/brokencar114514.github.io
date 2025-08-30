@@ -1,139 +1,157 @@
-var yun;
-var yun2;
-
-
-const COLOR_PRIMARY = 0x4e342e;
+const COLOR_MAIN = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
-const Random = Phaser.Math.Between;
+
+var content = `Ciallo～(∠・ω< )⌒☆`;
 
 class GameScene extends Phaser.Scene {
-  
-  constructor() { super({ key: 'GameScene' }); }
-  
-  
-  
-     
+    constructor() {
+        super({
+            key: 'GameScene'
+        })
+    }
 
-  
-preload() {
-    
-    this.load.audio('bgm','./audio/bgm.mp3');
-    
-    this.load.image('b0','./assets/background/sl/forest_long.png');
-    this.load.image('b1','./assets/background/sl/forest_mid.png');
-    
-     this.load.image('b2','./assets/background/sl/forest_back.png');
-      this.load.image('b3','./assets/background/sl/forest_mountain.png');
-      
-       this.load.image('b4','./assets/background/sl/forest_sky.png');
-   
-   
-   
-    
-    this.load.spritesheet('button', './assets/buttons/Small Square Buttons.png', {
-    frameWidth: 15,   // 每个按钮的宽度
-    frameHeight: 15,  // 每个按钮的高度
-    margin: 1,        // 如果图块之间有空隙，就写出来
-    spacing: 1
-});
-    
+    preload() { 
         this.load.scenePlugin({
             key: 'rexuiplugin',
-            url: './repo/rexui.js',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
-        });      
-    
-       this.load.image('background', './assets/background/1.png');
-       this.load.image('yun','./assets/background/4.png');
-       
-       
-    
-    
-   }
-   
-   
-create() {
-    
-    
-    this.bgWidth = 750; // 背景宽度
-
-    // 创建两个背景Container
-    this.bgContainers = [];
-
-    for (let i = 0; i < 2; i++) {
-      const container = this.add.container(i * this.bgWidth+3, 0);
-
-      const textures = ['b4','b3','b2','b1','b0'];
-      const yPositions = [395, 350, 335, 325, 320];
-      const depths = [5,4,3,2,1];
-
-      for (let j=0; j<textures.length; j++){
-        let bg = this.add.image(0, yPositions[j], textures[j])
-          .setDisplaySize(this.bgWidth, 300)
-          .setOrigin(0,0)
-          .setDepth(depths[j]);
-        container.add(bg);
-      }
-
-      this.bgContainers.push(container);
+        });
+ 
+        this.load.atlas('portraits', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/characters/portraits.png', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/characters/portraits.json');
+        
+        this.load.image('sun','./assets/ca.jpg');
     }
-    
-    
-    
-    
-/*
-    
-  var bk0=  this.add.image(0,395,'b0')
-    .setDisplaySize(750,300).setOrigin(this.width,0).setDepth(5);
-var bk1=    this.add.image(0,350,'b1').setDisplaySize(750,300).setOrigin(this.width,0).setDepth(4);
-    
-  var bk2=   this.add.image(0,335,'b2').setDisplaySize(750,300).setOrigin(this.width,0).setDepth(3);
-   
-var bk3=    this.add.image(0,325,'b3').setDisplaySize(750,300).setOrigin(this.width,0).setDepth(2);
 
-var bk4=  this.add.image(0,320,'b4').setDisplaySize(750,300).setOrigin(this.width,0).setDepth(1);
-   
-   */
+    create() {
+        
 
-    
-    
-    var bgm = this.sound.add('bgm');
-    bgm.play({loop:true});
-    
-        /*   var to = toast(this,'你好');
-           to.setInteractive();
-           to.on('pointerdown', () => {
-        console.log('按钮被按下');
-        // 这里执行点击后的逻辑，如切换场景、触发技能等
-    });*/
+        // Fixed size of textbox, and text game object
+        createTextBox(this, 0, 550, {
+            width: 600,
+            height: 150,
+            title: '孙昌赫'
+        })
+            .start(content, 50).setDisplaySize(350,120)
 
+
+
+    }
+
+    update() { }
 }
-    update(){
-      
-      
-      const speed = 2;
 
-    this.bgContainers.forEach(container => {
-      container.x -= speed;
+const GetValue = Phaser.Utils.Objects.GetValue;
+var createTextBox = function (scene, x, y, config) {
+    var width = GetValue(config, 'width', 0);
+    var height = GetValue(config, 'height', 0);
+    var wrapWidth = GetValue(config, 'wrapWidth', 0);
+    var fixedWidth = GetValue(config, 'fixedWidth', 0);
+    var fixedHeight = GetValue(config, 'fixedHeight', 0);
+    var titleText = GetValue(config, 'title', undefined);
+    var typingMode = GetValue(config, 'typingMode', 'page');
+    var maxLines = (width > 0) ? 0 : 3;
 
-      // 如果整个Container移出屏幕左侧
-      if(container.x <= -this.bgWidth){
-        // 移动到最右侧
-        const rightMost = Math.max(...this.bgContainers.map(c => c.x));
-        container.x = rightMost + this.bgWidth;
-      }
-    });
+    var textBox = scene.rexUI.add.textBox({
+        x: x, y: y,
+        width: width, height: height,
 
+        typingMode: typingMode,
 
-        
-        
-    }
-    
-    
-    
+        background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_MAIN, strokeColor: COLOR_LIGHT, strokeWidth: 2 }),
 
+        icon: scene.rexUI.add.transitionImagePack({
+            width: 40, height: 40,
+            key: 'sun'
+        }),
 
-  
-  
+        // text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
+        text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight, maxLines),
+        expandTextWidth: (width > 0),
+        expandTextHeight: (height > 0),
+
+        action: scene.rexUI.add.aioSpinner({
+            width: 30, height: 30,
+            duration: 1000,
+            animationMode: 'ball'
+        }).setVisible(false),
+
+        title: (titleText) ? scene.add.text(0, 0, titleText, { fontSize: '24px', }) : undefined,
+
+        separator: (titleText) ? scene.rexUI.add.roundRectangle({ height: 3, color: COLOR_DARK }) : undefined,
+
+        space: {
+            left: 20, right: 20, top: 20, bottom: 20,
+
+            icon: 10, text: 10,
+
+            separator: 6,
+        },
+
+        align: {
+            title: 'center',
+            action: 'bottom'
+        }
+    })
+        .setOrigin(0)
+        .layout();
+
+    textBox
+        .setInteractive()
+        .on('pointerdown', function () {
+            if (typingMode === 'page') {
+
+                var icon = this.getElement('action');
+                icon.stop().setVisible(false);
+                this.resetChildVisibleState(icon);
+
+                if (this.isTyping) {
+                    this.stop(true);
+                } else {
+                    this.typeNextPage();
+                }
+            }
+        }, textBox)
+        .on('pageend', function () {
+            if (this.isLastPage) {
+                return;
+            }
+
+            var icon = this.getElement('action');
+            icon.setVisible(true).start();
+            this.resetChildVisibleState(icon);
+
+        }, textBox)
+        .on('complete', function () {
+            console.log('all pages typing complete')
+        })
+    //.on('type', function () {
+    //})
+
+    return textBox;
+}
+
+var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.add.text(0, 0, '', {
+            fontSize: '20px',
+            wordWrap: {
+                width: wrapWidth
+            },
+            maxLines: 3
+        })
+        .setFixedSize(fixedWidth, fixedHeight);
+}
+
+var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.rexUI.add.BBCodeText(0, 0, '', {
+        fixedWidth: fixedWidth,
+        fixedHeight: fixedHeight,
+
+        fontSize: '20px',
+        wrap: {
+            mode: 'word',
+            width: wrapWidth
+        },
+        maxLines: 3
+    })
 }
