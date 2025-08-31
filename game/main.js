@@ -3,7 +3,11 @@ const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: '#333',
-    scene: [mainScene,GameScene]
+    physics: { 
+    default: 'arcade', 
+    arcade: { gravity: { y: 0 }, debug: false } 
+  },
+    scene: [mainScene,GameScene,PauseMenu,DinoGame]
     
     
 };

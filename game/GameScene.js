@@ -5,7 +5,6 @@ const COLOR_DARK = 0x260e04;
 var content = `Ciallo～(∠・ω< )⌒☆`;
 
 class GameScene extends Phaser.Scene {
-
     constructor() {
         super({
             key: 'GameScene'
