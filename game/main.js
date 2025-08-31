@@ -7,7 +7,7 @@ const config = {
     default: 'arcade', 
     arcade: { gravity: { y: 0 }, debug: false } 
   },
-    scene: [mainScene,GameScene,PauseMenu,DinoGame]
+    scene: [DinoGame,mainScene,GameScene,PauseMenu]
     
     
 };
