@@ -4,6 +4,7 @@ class mainScene extends Phaser.Scene {
   
   
   preload(){
+  
       
       this.load.audio('click','./audio/click.wav');
     
